@@ -1,0 +1,16 @@
+REQUIREMENTS:
+
+-Use linked Lists to store multiple alarms
+-sort said lists
+-check if any alarm should be going off
+-trigger alarms as needed
+-delete alarmsonce their time has passed
+-accept and process new alarms
+-exit manually
+
+
+GOALS:
+
+-File reading/writing
+-The file, when the program is closed, should be sorted
+-User menu
