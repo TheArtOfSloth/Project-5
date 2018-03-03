@@ -1,0 +1,16 @@
+viewAlarms(){
+
+  node nodepointer = head;
+  int itornum = 1;
+  cout << "Here are the alarms:" << endl;
+  while (nodepointer != NULL){
+
+    cout << itornum << " : ";
+    cout << nodepointer->time[DAY] << " " << nodepointer->time[HOUR];
+    cout << endl;
+    
+    itornum++;
+    nodepointer = nodepointer->next;
+    
+  }
+}
