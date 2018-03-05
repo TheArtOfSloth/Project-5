@@ -17,7 +17,6 @@
 #include<stdexcept>
 #include<thread>
 #include<string>
-#include<list>
 
 // GLOBAL CONSTANTS / VARIABLES
 // NONE
@@ -42,13 +41,6 @@ private:
 		Node *next;				        // Pointer to next Node
 	};
 	Node *head;					        // Head pointer to Node list
-	struct Events
-	{
-	string alarmName;
-	time_t alarmTime;
-	struct std::tm when;
-	};
-	list<Events> alarms;
 	bool isRunning, soundAlarm, placeholder;	// Semaphore booleans for threads
 	std::string filename;		    // String to hold file name
 	std::thread t1, t2;			    // Threads to run loops
@@ -168,7 +160,7 @@ void Alarmer::alarmLoop()
 };
 
 //runs the threads
-void doomClock::mainLoop()
+void Alarmer::mainLoop()
 {
 	t1 = thread(&Alarmer::userLoop, this);
 	t2 = thread(&Alarmer::alarmLoop, this);
