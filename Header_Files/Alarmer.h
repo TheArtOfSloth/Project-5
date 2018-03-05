@@ -16,6 +16,7 @@
 #include<iostream>
 #include<stdexcept>
 #include<thread>
+#include<string>
 
 // GLOBAL CONSTANTS / VARIABLES
 // NONE
