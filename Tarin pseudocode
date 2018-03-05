@@ -14,3 +14,35 @@ viewAlarms(){
     
   }
 }
+
+
+//take two
+
+viewAlarms(){
+
+  //initialize the function's stuff
+  Node nodePointer = head;
+  int itornum = 1;
+  cout << "Here are the alarms:" << endl;
+  
+  //make the loop
+  while(nodePointer != NULL){
+    //print the alarm number
+    cout << itornum << " : ";
+    
+    //print out the time
+    cout << nodePointer->time[YEAR] << "-" << nodePointer->time[MONTH] << "-" << nodePointer->time[DAY];
+    cout << " " << nodePointer->time[HOUR] << ":" << nodePointer->time[MINUTE] << ":" << nodePointer->time[SECOND];
+    
+    //print out the message
+    cout
+    
+
+}
+
+polling(){
+  bool exitVar = FALSE;
+  while(!exitVar){
+    menu();
+  }
+}
