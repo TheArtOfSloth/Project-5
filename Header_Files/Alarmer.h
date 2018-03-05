@@ -86,6 +86,12 @@ void Alarmer::viewAlarms()
 
 };
 
+//saves the file
+void Alarmer::saveFile()
+{
+
+};
+
 //adds alarm
 void Alarmer::addAlarm()
 {
