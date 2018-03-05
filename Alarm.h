@@ -58,18 +58,27 @@ class Alarm
 	}
 	//Menu interface & user interface loop
 	void menu() {
-		std::string line;
-		std::cout << "1: Add new alarm\n"
-			<< "2: View alarms\n"
-			<< "3: Delete an alarm\n"
-			<< "4: Quit\n";
-		std::cout << ">";
-		std::getline(std::cin, line);
 		
-		line == "1" ? addAlarm() :
-		line == "2" ? getAlarms() :
-		line == "3" ? removeAlarm() :
-		line == "4" ? quit() : error();
+		//Tarin here, trying to set up a polling loop
+		bool exitVar = FALSE;
+		
+		while(!exitVar){
+		
+			std::string line;
+			std::cout << "1: Add new alarm\n"
+				<< "2: View alarms\n"
+				<< "3: Delete an alarm\n"
+				<< "4: Quit\n";
+			std::cout << ">";
+			std::getline(std::cin, line);
+		
+			line == "1" ? addAlarm() :
+			line == "2" ? getAlarms() :
+			line == "3" ? removeAlarm() :
+			line == "4" ? exitVar = TRUE : error();
+			
+		}
+		quit();
 	}
 
 	void error() {
