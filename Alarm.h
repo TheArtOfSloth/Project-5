@@ -21,7 +21,6 @@ class Alarm
 
 		friend std::ostream & operator<<(std::ostream & out, const Node & alarm) {
 			out << alarm.timestamp << " " << alarm.message << "\n";
-			//std::copy(alarms.begin(), alarms.end(), ostream_iterator<std::string>(out, " "));
 			return out;
 		}
 
@@ -30,7 +29,7 @@ class Alarm
 
 	//List of alarms. Parsed from filename.
 	std::list<Node> alarms;
-	//Filename - TESTING : Change later.
+	//Filename - CHANGE LATER.
 	std::string filename = "C:\\Users\\John\\Desktop\\Schedule.txt";
 	//Open file
 	void open(std::string filename) {
@@ -67,8 +66,6 @@ class Alarm
 		std::cout << ">";
 		std::getline(std::cin, line);
 		
-    //NOTE: Currently some issues with removeAlarm. FIX.
-    
 		line == "1" ? addAlarm() :
 		line == "2" ? getAlarms() :
 		line == "3" ? removeAlarm() :
@@ -93,29 +90,18 @@ class Alarm
 		std::cout << "Enter message for alarm: ";
 		std::getline(std::cin, message);
 		std::cin.ignore();
-		//message = message + '\n';
+		message = message + '\n';
 		Node alarm = Node(datetime, message);
 		alarms.push_back(alarm);
 		save(alarm);
 	}
 
 	void getAlarms() {
-		std::fstream file;
-		std::string line;
-		file.open(filename, std::fstream::in);
-		if (!file.is_open()) {
-			std::cout << "Error retrieving alarms. File may be corrupted.\n";
+		int i = 0;
+		for (auto it : alarms) {
+			std::cout << "#" << i << ": " << it;
+			i++;
 		}
-		else {
-			int i = 0;
-			while (!file.eof()) {
-				std::cout << "Alarm #" << i << ": ";
-				std::getline(file, line);
-				std::cout << line << "\n";
-				i++;
-			}
-		}
-		file.close();
 	}
 
 	void removeAlarm() {
@@ -123,32 +109,17 @@ class Alarm
 		int num;
 		std::cout << "Enter alarm number to delete: ";
 		std::cin >> num;
-		std::fstream file;
-		file.open(filename, std::fstream::in);
-		if (file.is_open()) {
-			int line_ctr = 0;
-			while (!file.eof()) {
-				if (line_ctr != num) {
-					std::string line;
-					std::getline(file, line, ' ');
 
-					std::string date = line;
-					std::cin.ignore();
-					std::getline(file, line, ' ');
+		int i = 0;
+		for (auto it : alarms) {
+			std::cout << "#" << i << ": " << it;
 
-					std::string time = line;
-					std::string datetime = date + " " + time;
-					std::cin.ignore();
-
-					std::getline(file, line, '\n');
-					std::string message = line;
-					Node alarm = Node(datetime, message);
-					alarms.push_back(alarm);
-				}
-				else {
-					file.ignore(256, '\n');
-				}
+			//NEED TO FIX THIS.
+			/*if (it->i == num) {
+				alarms.erase(it);
 			}
+			*/
+			i++;
 		}
 	}
 
@@ -171,6 +142,25 @@ class Alarm
 public:
 	Alarm() {
 		//setFilename();
+		//Parse any contents of file into alarms list.
+		std::fstream file;
+		std::string datetime, message, line;
+		file.open(filename, std::fstream::in);
+		while (!file.eof()) {
+			std::getline(file, line, '_');
+			datetime = line;
+			std::getline(file, line, '\n');
+			message = line;
+			Node alarm = Node(datetime, message);
+			alarms.push_back(alarm);
+		}
+		file.close();
+		int i = 0;
+		for (auto it : alarms) {
+			std::cout << "#" << i << ": " << it;
+			i++;
+		}
+
 		menu();
 	}
 	~Alarm() { }
