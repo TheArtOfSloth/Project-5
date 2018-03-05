@@ -46,6 +46,7 @@ class Alarm
 
 		file.close();
 	}
+	//TODO: Change from append mode to truncate and overwrite file from std::list contents.
 	void save(Node alarm) {
 		std::fstream file;
 		file.open(filename, std::ios::out | std::ios::app | std::ios::binary);
@@ -56,29 +57,54 @@ class Alarm
 			file << alarm;
 		}
 	}
-	//Menu interface & user interface loop
+
 	void menu() {
+		std::cout << "1: Add new alarm\n"
+			<< "2: View alarms\n"
+			<< "3: Delete an alarm\n"
+			<< "4: Quit\n";
+		std::cout << ">";
+	}
+
+	//Menu interface & user interface loop
+	void polling() {
+		/*std::string line;
+		std::cout << "1: Add new alarm\n"
+			<< "2: View alarms\n"
+			<< "3: Delete an alarm\n"
+			<< "4: Quit\n";
+		std::cout << ">";
+		std::getline(std::cin, line);
 		
+		line == "1" ? addAlarm() :
+		line == "2" ? getAlarms() :
+		line == "3" ? removeAlarm() :
+		line == "4" ? quit() : 
+		line == "5" ? setFilename() : error();
+		*/
 		//Tarin here, trying to set up a polling loop
-		bool exitVar = FALSE;
-		
-		while(!exitVar){
-		
+		bool exitVar = false;
+
+		while (!exitVar) {
 			std::string line;
-			std::cout << "1: Add new alarm\n"
-				<< "2: View alarms\n"
-				<< "3: Delete an alarm\n"
-				<< "4: Quit\n";
-			std::cout << ">";
+			menu();
 			std::getline(std::cin, line);
-		
-			line == "1" ? addAlarm() :
-			line == "2" ? getAlarms() :
-			line == "3" ? removeAlarm() :
-			line == "4" ? exitVar = TRUE : error();
-			
+
+			if (line == "1") {
+				addAlarm();
+			}
+			else if (line == "2") {
+				getAlarms();
+			}
+			else if (line == "3") {
+				removeAlarm();
+			}
+			else {
+				exitVar = true;
+			}
 		}
 		quit();
+
 	}
 
 	void error() {
@@ -124,10 +150,9 @@ class Alarm
 			std::cout << "#" << i << ": " << it;
 
 			//NEED TO FIX THIS.
-			/*if (it->i == num) {
-				alarms.erase(it);
+			if (i == num) {
+				it = alarms.erase(it);
 			}
-			*/
 			i++;
 		}
 	}
@@ -136,15 +161,18 @@ class Alarm
 		exit(0);
 	}
 
+
+	//TODO: Create wizard to let user save file elsewhere.
+	//For time being, save the file to the current directory?
 	void setFilename() {
 		std::string name;
 		std::cout << "Enter filename: ";
 		std::cin >> name;
 		if (!name.find(".")) {
-			filename = name + ".txt";
+			filename = "./" + name + ".txt";
 		}
 		else {
-			filename = name;
+			filename = "./" + name;
 		}
 	}
 
@@ -170,7 +198,7 @@ public:
 			i++;
 		}
 
-		menu();
+		polling();
 	}
 	~Alarm() { }
 };
