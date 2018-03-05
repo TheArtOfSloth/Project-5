@@ -1,0 +1,12 @@
+Tarin here, this is going to be an ecclectic project
+
+Friday March 2nd
+Our group meet up, and we all agreed on a single roadmap with very clear, concise goals, stretch goals, and jobs for each of us. I am heading home right after the meeting, but I have one job before any others: make a viewAlarms() function. As soon as I have the format of the time variable and the linked list, I can make it
+
+Saturday
+Our group hasn't actually... sent me the code yet. They haven't emailed me, returned my emails, or posted to github. Not mad, really. I'll just write some pseudocode and fill in the variable names one my team returns my emails
+
+Monday
+So two things were learned. One is that they were busy not posting to github for understandable real life reasons (like job interviews over the weekend and such). Two, that someone else already wrote viewAlarm() for me, better than I ever could. Great, I feel redundant
+So they game me a new job, write a polling loop in menu(). I wrote one, and I'm waiting on the compiler to tell me if it's valid or not...
+
