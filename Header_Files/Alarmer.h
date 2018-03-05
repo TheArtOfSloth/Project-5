@@ -44,6 +44,7 @@ private:
 									  //Node *next;				        // Pointer to next Node
 	};
 	list<Node> alarms;
+	void setEqual(Node);
 	//Node *head;					        // Head pointer to Node list
 	bool isRunning, soundAlarm, placeholder;	// Semaphore booleans for threads
 	string filename;		    // String to hold file name
@@ -70,6 +71,12 @@ Alarmer::Alarmer(string a)
 
 //destructor
 Alarmer::~Alarmer()
+{
+
+};
+
+//setter for use in alarmLoop
+void Alarmer::setEqual(Node a)
 {
 
 };
@@ -182,23 +189,24 @@ void Alarmer::userLoop()
 //runs the alarm
 void Alarmer::alarmLoop()
 {
-	Node *viewer = new Node;
+	Node viewer = Node();
 	Node *viewed = new Node;
-	viewer = &alarms.front();
-	viewed = viewer;
+	viewer = alarms.front();
+	viewed = &viewer;
 	using chrono::system_clock;
 	time_t tt = system_clock::to_time_t(system_clock::now());
 	struct tm * ptm = localtime(&tt);
 	while (isRunning)
 	{
 		tt = system_clock::to_time_t(system_clock::now());
-		ptm = localtime(&tt);    //Syntax error
+		ptm = localtime(&tt);
+		viewer = alarms.front();
 		if (placeholder /*|| (head && (mktime((&head->when)) <= tt))*/)
 		{
 			placeholder = false;
 			soundAlarm = true;
 		};
-		if (!alarms.empty() && (mktime((&viewer->time)) <= tt))
+		if (!alarms.empty() && (mktime((&viewed->time)) <= tt))
 			soundAlarm = true;
 		/*
 		while (viewer)
@@ -224,7 +232,6 @@ void Alarmer::alarmLoop()
 		}
 		this_thread::sleep_for(chrono::seconds(1));
 	}
-	delete viewer;
 	delete viewed;
 };
 
