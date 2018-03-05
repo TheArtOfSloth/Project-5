@@ -160,7 +160,7 @@ void Alarmer::alarmLoop()
 };
 
 //runs the threads
-void doomClock::mainLoop()
+void Alarmer::mainLoop()
 {
 	t1 = thread(&Alarmer::userLoop, this);
 	t2 = thread(&Alarmer::alarmLoop, this);
