@@ -6,7 +6,7 @@
 #include <iterator>
 #include <fstream>
 #include <string>
-#include <vector>
+#include <list>
 
 class Alarm
 {
@@ -29,7 +29,7 @@ class Alarm
 	};
 
 	//List of alarms. Parsed from filename.
-	std::vector<Node> alarms;
+	std::list<Node> alarms;
 	//Filename - TESTING : Change later.
 	std::string filename = "C:\\Users\\John\\Desktop\\Schedule.txt";
 	//Open file
