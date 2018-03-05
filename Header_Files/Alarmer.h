@@ -1,8 +1,8 @@
 /**
- * File holding Alarm class, methods, and necessary values.
- * @author	KLAPSTEIN_DANIEL
- * @author	SMITH_EVAN
- */
+* File holding Alarm class, methods, and necessary values.
+* @author	KLAPSTEIN_DANIEL
+* @author	SMITH_EVAN
+*/
 #ifndef ALARMER_H
 #define ALARMER_H 1
 #define _CRT_SECIRE_NO_WARNINGS 1
@@ -18,19 +18,21 @@
 #include<thread>
 #include<string>
 
+using namespace std;
+
 // GLOBAL CONSTANTS / VARIABLES
 // NONE
 
 // CLASSES / STRUCTS
 
 /**
- * Alarmer class to hold and manage a list of alarams, dates, and times.
- */
+* Alarmer class to hold and manage a list of alarams, dates, and times.
+*/
 class Alarmer
 {
 public:
 	Alarmer();					        // Default constructor (prompt to create file)
-	Alarmer(std::string);		    // Constructor taking file name
+	Alarmer(string);		    // Constructor taking file name
 	void mainLoop();			      // Main polling loop to hold threads
 	~Alarmer()					        // Class destructor
 private:
@@ -38,18 +40,63 @@ private:
 	{
 		std::string label;		    // Alarm label
 		struct tm time;			      // ctime object to hold time
-		Node *next;				        // Pointer to next Node
+									  //Node *next;				        // Pointer to next Node
 	};
-	Node *head;					        // Head pointer to Node list
+	list<Node> alarms;
+	//Node *head;					        // Head pointer to Node list
 	bool isRunning, soundAlarm, placeholder;	// Semaphore booleans for threads
-	std::string filename;		    // String to hold file name
-	std::thread t1, t2;			    // Threads to run loops
+	string filename;		    // String to hold file name
+	thread t1, t2;			    // Threads to run loops
 	void addAlarm();			      // Function to add a new alarm
 	void alarmLoop();			      // Thread function to handle alarm checking
 	void deleteAlarm();			    // Function to remove alarm from list
 	void saveFile();			      // Function to sort alarms and save to filename
 	void userLoop();			      // Thread function to handle user input
 	void viewAlarms();			    // Function to display all alarms
+};
+
+//default constructor
+Alarmer::Alarmer()
+{
+
+};
+
+//standard constructor
+Alarmer::Alarmer(string a)
+{
+
+};
+
+//destructor
+Alarmer::~Alarmer()
+{
+
+};
+
+
+//adds alarm
+void Alarmer::addAlarm()
+{
+	Node *temp = new Node;
+	cout << "Please enter the name of the alarm: ";
+	cin >> temp->label;
+	cout << "Please enter the month of the alarm: ";
+	cin >> temp->when.tm_mon;
+	temp->time.tm_mon -= 1;
+	cout << "Please enter the day of the alarm: ";
+	cin >> temp->time.tm_mday;
+	cout << "Please enter the year of the alarm: ";
+	cin >> temp->time.tm_year;
+	temp->time.tm_year -= 1900;
+	cout << "Please enter the hour of the alarm, from 0-23: ";
+	cin >> temp->time.tm_hour;
+	cout << "Please enter the minute of the alarm, from 0-59: ";
+	cin >> temp->time.tm_min;
+	temp->time.tm_sec = 0;
+	//temp->next = head;
+	//head = temp;
+	alarms.push_back(temp);
+	//sortList();//-----------------------------------------------------------------------------------------
 };
 
 
@@ -68,12 +115,12 @@ void Alarmer::userLoop()
 		}
 		else
 		{
-			
-			cout <<  "1 - View Next Alarm" << endl;
-			cout <<  "2 - Add New Alarm" << endl;
-			cout <<  "3 - Delete Alarm" << endl;
-			cout <<  "4 - Exit" << endl;
-			cout <<  "5 - Test Dummy Alarm" << endl;
+
+			cout << "1 - View Next Alarm" << endl;
+			cout << "2 - Add New Alarm" << endl;
+			cout << "3 - Delete Alarm" << endl;
+			cout << "4 - Exit" << endl;
+			cout << "5 - Test Dummy Alarm" << endl;
 			cin >> command1;
 			cout << endl;
 			switch (command1)
