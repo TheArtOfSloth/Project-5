@@ -5,7 +5,7 @@
 */
 #ifndef ALARMER_H
 #define ALARMER_H 1
-#define _CRT_SECIRE_NO_WARNINGS 1
+#define _CRT_SECURE_NO_WARNINGS 1
 
 // LIBRARIES
 #include "Alarmer.h"
@@ -17,6 +17,7 @@
 #include<stdexcept>
 #include<thread>
 #include<string>
+#include <list>
 
 using namespace std;
 
@@ -34,7 +35,7 @@ public:
 	Alarmer();					        // Default constructor (prompt to create file)
 	Alarmer(string);		    // Constructor taking file name
 	void mainLoop();			      // Main polling loop to hold threads
-	~Alarmer()					        // Class destructor
+	~Alarmer();				        // Class destructor
 private:
 	struct Node					        // Struct to hold each individual alarm
 	{
@@ -73,26 +74,37 @@ Alarmer::~Alarmer()
 
 };
 
+//delete an Alarm
+void Alarmer::deleteAlarm()
+{
+
+};
+
+//view alarms
+void Alarmer::viewAlarms()
+{
+
+};
 
 //adds alarm
 void Alarmer::addAlarm()
 {
-	Node *temp = new Node;
+	Node temp = Node();
 	cout << "Please enter the name of the alarm: ";
-	cin >> temp->label;
+	cin >> temp.label;
 	cout << "Please enter the month of the alarm: ";
-	cin >> temp->when.tm_mon;
-	temp->time.tm_mon -= 1;
+	cin >> temp.time.tm_mon;
+	temp.time.tm_mon -= 1;
 	cout << "Please enter the day of the alarm: ";
-	cin >> temp->time.tm_mday;
+	cin >> temp.time.tm_mday;
 	cout << "Please enter the year of the alarm: ";
-	cin >> temp->time.tm_year;
-	temp->time.tm_year -= 1900;
+	cin >> temp.time.tm_year;
+	temp.time.tm_year -= 1900;
 	cout << "Please enter the hour of the alarm, from 0-23: ";
-	cin >> temp->time.tm_hour;
+	cin >> temp.time.tm_hour;
 	cout << "Please enter the minute of the alarm, from 0-59: ";
-	cin >> temp->time.tm_min;
-	temp->time.tm_sec = 0;
+	cin >> temp.time.tm_min;
+	temp.time.tm_sec = 0;
 	//temp->next = head;
 	//head = temp;
 	alarms.push_back(temp);
@@ -103,7 +115,7 @@ void Alarmer::addAlarm()
 //runs user input
 void Alarmer::userLoop()
 {
-	string command1;
+	int command1;
 	while (isRunning)
 	{
 		if (soundAlarm)
@@ -111,7 +123,7 @@ void Alarmer::userLoop()
 			cout << "ALARM TIME!!! Type any entry to exit." << endl;
 			cin >> command1;
 			soundAlarm = false;
-			deleteNextAlarm();
+			deleteAlarm();
 		}
 		else
 		{
@@ -164,9 +176,9 @@ void Alarmer::userLoop()
 //runs the alarm
 void Alarmer::alarmLoop()
 {
-	Events* viewer = new Events;
-	Events* viewed = new Events;
-	viewer = head;
+	Node *viewer = new Node;
+	Node *viewed = new Node;
+	viewer = &alarms.front();
 	viewed = viewer;
 	using chrono::system_clock;
 	time_t tt = system_clock::to_time_t(system_clock::now());
@@ -180,11 +192,12 @@ void Alarmer::alarmLoop()
 			placeholder = false;
 			soundAlarm = true;
 		};
-		if (head && (mktime((&head->when)) <= tt))
+		if (!alarms.empty() && (mktime((&viewer->time)) <= tt))
 			soundAlarm = true;
+		/*
 		while (viewer)
 		{
-			if (viewer && (mktime((&viewer->when)) <= tt))
+			if (viewer && (mktime((&viewer->time)) <= tt))
 			{
 				soundAlarm = true;
 				viewed->next = viewer->next;
@@ -194,6 +207,7 @@ void Alarmer::alarmLoop()
 			}
 
 		}
+		*/
 		if (soundAlarm)
 		{
 			while (soundAlarm)
@@ -204,6 +218,8 @@ void Alarmer::alarmLoop()
 		}
 		this_thread::sleep_for(chrono::seconds(1));
 	}
+	delete viewer;
+	delete viewed;
 };
 
 //runs the threads
