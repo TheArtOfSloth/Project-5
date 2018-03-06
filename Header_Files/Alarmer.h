@@ -54,9 +54,7 @@ public:
 	void mainLoop();			      // Main polling loop to hold threads
 	~Alarmer();				        // Class destructor
 private:
-	
 	list<Node> alarms;
-	void setEqual(Node);
 	bool isRunning, soundAlarm, placeholder;	// Semaphore booleans for threads
 	string filename;		    // String to hold file name
 	thread t1, t2;			    // Threads to run loops
@@ -83,12 +81,6 @@ Alarmer::Alarmer(string a)
 
 //destructor
 Alarmer::~Alarmer()
-{
-
-};
-
-//setter for use in alarmLoop
-void Alarmer::setEqual(Node a)
 {
 
 };
@@ -158,8 +150,6 @@ void Alarmer::addAlarm()
 	cout << "Please enter the minute of the alarm, from 0-59: ";
 	cin >> temp.time.tm_min;
 	temp.time.tm_sec = 0;
-	//temp->next = head;
-	//head = temp;
 	alarms.push_back(temp);
 	//sortList();//-----------------------------------------------------------------------------------------
 };
