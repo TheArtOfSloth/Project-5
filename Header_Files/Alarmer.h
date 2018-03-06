@@ -176,7 +176,7 @@ void Alarmer::userLoop()
 			cout << "ALARM TIME!!! Type any entry to exit." << endl;
 			cin >> command1;
 			soundAlarm = false;
-			deleteAlarm();
+			alarms.pop_front();
 		}
 		else
 		{
