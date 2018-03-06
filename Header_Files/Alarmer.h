@@ -55,7 +55,7 @@ public:
 	~Alarmer();				        // Class destructor
 private:
 	list<Node> alarms;
-	bool isRunning, soundAlarm, placeholder;	// Semaphore booleans for threads
+	bool isRunning, soundAlarm, placeholder, placeholder2;	// Semaphore booleans for threads
 	string filename;		    // String to hold file name
 	thread t1, t2;			    // Threads to run loops
 	void addAlarm();			      // Function to add a new alarm
@@ -166,7 +166,9 @@ void Alarmer::userLoop()
 			cout << "ALARM TIME!!! Type any entry to exit." << endl;
 			cin >> command1;
 			soundAlarm = false;
+			if(!placeholder2)
 			alarms.pop_front();
+			placeholder2 = false;
 		}
 		else
 		{
@@ -204,6 +206,7 @@ void Alarmer::userLoop()
 			case 5:
 			{
 				placeholder = true;
+				placeholder2 = true;
 				break;
 			};
 			default:
@@ -246,27 +249,13 @@ void Alarmer::alarmLoop()
 		{
 			viewed = NULL;
 		};
-		if (placeholder /*|| (head && (mktime((&head->when)) <= tt))*/)
+		if (placeholder)
 		{
 			placeholder = false;
 			soundAlarm = true;
 		};
 		if (!alarms.empty() && (mktime((&viewed->time)) <= tt))
 			soundAlarm = true;
-		/*
-		while (viewer)
-		{
-		if (viewer && (mktime((&viewer->time)) <= tt))
-		{
-		soundAlarm = true;
-		viewed->next = viewer->next;
-		viewer->next = head;
-		head = viewer;
-		break;
-		}
-
-		}
-		*/
 		if (soundAlarm)
 		{
 			while (soundAlarm)
