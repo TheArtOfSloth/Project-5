@@ -85,6 +85,18 @@ Alarmer::~Alarmer()
 
 };
 
+//saves the file
+void Alarmer::saveFile()
+{
+
+};
+
+//sorts the list of Alarms
+void Alarmer::sortAlarms()
+{
+
+};
+
 //delete an Alarm
 void Alarmer::deleteAlarm()
 {
@@ -117,18 +129,6 @@ void Alarmer::viewAlarms()
 	{
 		cout << "There are no scheduled events." << endl;
 	}
-};
-
-//saves the file
-void Alarmer::saveFile()
-{
-
-};
-
-//sorts the list of Alarms
-void Alarmer::sortAlarms()
-{
-
 };
 
 //adds alarm
