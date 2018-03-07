@@ -1,12 +1,14 @@
 #pragma once
 #ifndef ALARM_H
 #define ALARM_H 1
+#define _CRT_SECURE_NO_WARNINGS 1
 #include <algorithm>
+#include <chrono>
+#include <fstream>
 #include <iostream>
 #include <iterator>
-#include <fstream>
-#include <string>
 #include <list>
+#include <string>
 
 class Alarm
 {
@@ -49,39 +51,27 @@ class Alarm
 	//TODO: Change from append mode to truncate and overwrite file from std::list contents.
 	void save(Node alarm) {
 		std::fstream file;
-		file.open(filename, std::ios::out | std::ios::app | std::ios::binary);
+		file.open(filename, std::ios::out | std::ios::trunc | std::ios::binary);
 		if (!file.is_open()) {
 			std::cout << "Error saving to file\n";
 		}
 		else {
 			file << alarm;
 		}
+		file.close();
 	}
 
 	void menu() {
 		std::cout << "1: Add new alarm\n"
 			<< "2: View alarms\n"
 			<< "3: Delete an alarm\n"
-			<< "4: Quit\n";
+			<< "4: Check current time\n"
+			<< "5: Quit\n";
 		std::cout << ">";
 	}
 
 	//Menu interface & user interface loop
 	void polling() {
-		/*std::string line;
-		std::cout << "1: Add new alarm\n"
-			<< "2: View alarms\n"
-			<< "3: Delete an alarm\n"
-			<< "4: Quit\n";
-		std::cout << ">";
-		std::getline(std::cin, line);
-		
-		line == "1" ? addAlarm() :
-		line == "2" ? getAlarms() :
-		line == "3" ? removeAlarm() :
-		line == "4" ? quit() : 
-		line == "5" ? setFilename() : error();
-		*/
 		//Tarin here, trying to set up a polling loop
 		bool exitVar = false;
 
@@ -99,11 +89,31 @@ class Alarm
 			else if (line == "3") {
 				removeAlarm();
 			}
+			else if (line == "4") {
+				time();
+			}
 			else {
 				exitVar = true;
 			}
 		}
 		quit();
+
+	}
+
+	void time() {
+		std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+		time_t tt = std::chrono::system_clock::to_time_t(now);
+		tm local_tm = *localtime(&tt);
+
+		//Capture timepoint for current time
+		std::string year = local_tm.tm_year + 1900 + " ";
+		std::string mon = local_tm.tm_mon + 1 + "";
+		std::string day = local_tm.tm_mday + "";
+		std::string hour = local_tm.tm_hour + "";
+		std::string min = local_tm.tm_min + "";
+		std::string sec = local_tm.tm_sec + "";
+		//Convert entered date versus timepoint to see how long til alarm goes off.
+
 
 	}
 
@@ -115,9 +125,9 @@ class Alarm
 		std::string datetime;
 		std::string date;
 		std::string time;
-		std::cout << "Enter date for alarm: ";
+		std::cout << "Enter date for alarm (YYYY/MM/DD): ";
 		std::cin >> date;
-		std::cout << "Enter time to schedule alarm for: ";
+		std::cout << "Enter time to schedule alarm for (00:00 - 23:59): ";
 		std::cin >> time;
 		datetime = date + " " + time;
 		std::string message;
@@ -144,17 +154,37 @@ class Alarm
 		int num;
 		std::cout << "Enter alarm number to delete: ";
 		std::cin >> num;
+		// Daniel's implementation
+		if (!alarms.empty()) {
+			std::list<Node>::iterator remove;
+			remove = alarms.begin();
+			advance(remove, num);
+			alarms.erase(remove);
 
-		int i = 0;
-		for (auto it : alarms) {
-			std::cout << "#" << i << ": " << it;
+			std::cout << "Success?\n";
+			for (auto it : alarms) {
+				save(it);
 
-			//NEED TO FIX THIS.
-			if (i == num) {
-				it = alarms.erase(it);
+				std::cout << it;
 			}
-			i++;
+
 		}
+		//There are some issues with the old list (after removal) writing to the file properly.
+		//As such, we can create a new list to store the values. Then write the new list into the file.
+		/*std::list<Node> newAlarms;
+		for (auto it : alarms) {
+			newAlarms.push_back(it);
+		}
+		for (auto it : newAlarms) {
+			save(it);
+		}
+		std::cout << "Success?\n";
+		getAlarms();
+		*/
+		//This is to capture user input and prevent the program from closing.
+		std::cin.get();
+		getAlarms();
+		
 	}
 
 	void quit() {
