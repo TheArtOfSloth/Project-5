@@ -31,17 +31,8 @@ struct Node					        // Struct to hold each individual alarm
 {
 	string label;		    // Alarm label
 	struct tm time;			      // ctime object to hold time
-								  //Node *next;				        // Pointer to next Node
+	
 };
-
-/*
-// comparison, not case sensitive.
-bool compare_fullTime(const tm& first, const tm& second)
-{
-	return (first.length() < second.length());
-}
-*/
-
 
 /**
 * Alarmer class to hold and manage a list of alarams, dates, and times.
@@ -154,7 +145,6 @@ void Alarmer::addAlarm()
 	//sortList();//-----------------------------------------------------------------------------------------
 };
 
-
 //runs user input
 void Alarmer::userLoop()
 {
@@ -166,8 +156,8 @@ void Alarmer::userLoop()
 			cout << "ALARM TIME!!! Type any entry to exit." << endl;
 			cin >> command1;
 			soundAlarm = false;
-			if(!placeholder2)
-			alarms.pop_front();
+			if (!placeholder2)
+				alarms.pop_front();
 			placeholder2 = false;
 		}
 		else
