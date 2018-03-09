@@ -204,7 +204,7 @@ void Alarmer::userLoop()
 				cout << "Invalid option. Try again." << endl;
 				break;
 			};
-			};
+			}; 
 		}
 	};
 };
