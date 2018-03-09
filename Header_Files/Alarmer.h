@@ -16,7 +16,6 @@
 #include<iostream>
 #include<stdexcept>
 #include<thread>
-#include<string>
 
 // GLOBAL CONSTANTS / VARIABLES
 // NONE
@@ -29,145 +28,115 @@
 class Alarmer
 {
 public:
-	Alarmer();					        // Default constructor (prompt to create file)
-	Alarmer(std::string);		    // Constructor taking file name
-	void mainLoop();			      // Main polling loop to hold threads
-	~Alarmer()					        // Class destructor
+	Alarmer();					// Default constructor (prompt to create file)
+	Alarmer(std::string);		// Constructor taking file name
+	void mainLoop();			// Main polling loop to hold threads
+	~Alarmer()					// Class destructor
 private:
-	struct Node					        // Struct to hold each individual alarm
+	struct Node					// Struct to hold each individual alarm
 	{
-		std::string label;		    // Alarm label
-		struct tm time;			      // ctime object to hold time
-		Node *next;				        // Pointer to next Node
+		std::string label;		// Alarm label
+		struct tm time;			// ctime object to hold time
+		Node *next;				// Pointer to next Node
 	};
-	Node *head;					        // Head pointer to Node list
-	bool isRunning, soundAlarm, placeholder;	// Semaphore booleans for threads
-	std::string filename;		    // String to hold file name
-	std::thread t1, t2;			    // Threads to run loops
-	void addAlarm();			      // Function to add a new alarm
-	void alarmLoop();			      // Thread function to handle alarm checking
-	void deleteAlarm();			    // Function to remove alarm from list
-	void saveFile();			      // Function to sort alarms and save to filename
-	void userLoop();			      // Thread function to handle user input
-	void viewAlarms();			    // Function to display all alarms
+	Node *head;					// Head pointer to Node list
+	bool isRunning, soundAlarm;	// Semaphore booleans for threads
+	std::string filename;		// String to hold file name
+	std::thread t1, t2;			// Threads to run loops
+	void addAlarm();			// Function to add a new alarm
+	void alarmLoop();			// Thread function to handle alarm checking
+	void deleteAlarm();			// Function to remove alarm from list
+	void saveFile();			// Function to sort alarms and save to filename
+	void userLoop();			// Thread function to handle user input
+	void viewAlarms();			// Function to display all alarms
 };
 
+// FUNCTIONS : Alarmer
 
-//runs user input
-void Alarmer::userLoop()
+/**
+ * Default consructor. Creates blank text file "schedule(#).txt".
+ */
+Alarmer::Alarmer() : head(nullptr), isRunning(true), soundAlarm(false)
 {
-	string command1;
-	while (isRunning)
+	std::fstream file;
+	int count = 0;
+	do
 	{
-		if (soundAlarm)
-		{
-			cout << "ALARM TIME!!! Type any entry to exit." << endl;
-			cin >> command1;
-			soundAlarm = false;
-			deleteNextAlarm();
-		}
-		else
-		{
-			
-			cout <<  "1 - View Next Alarm" << endl;
-			cout <<  "2 - Add New Alarm" << endl;
-			cout <<  "3 - Delete Alarm" << endl;
-			cout <<  "4 - Exit" << endl;
-			cout <<  "5 - Test Dummy Alarm" << endl;
-			cin >> command1;
-			cout << endl;
-			switch (command1)
-			{
-			case 1:
-			{
-				viewAlarms();
-				break;
-			};
-			case 2:
-			{
-				addAlarm();
-				break;
-			};
-			case 3:
-			{
-				deleteAlarm();
-				break;
-			};
-			case 4:
-			{
-				isRunning = false;
+		filename = "schedule(" + std::to_string(count++) + ").txt";
+		file.open(filename, ios::in);
+	} while(file.good());
+	file.open(filename, ios::out | ios::trunc);
+	file.close();
+}
 
-				break;
-			};
-			case 5:
-			{
-				placeholder = true;
-				break;
-			};
-			default:
-			{
-				cout << "Invalid option. Try again." << endl;
-				break;
-			};
-			};
-		}
-	};
-};
-
-//runs the alarm
-void Alarmer::alarmLoop()
+/**
+ * Class constructor to load/create a schedule file.
+ * @param	string representation of filename containing schedule as text
+ */
+Alarmer::Alarmer(std::string filename) : head(nullptr), isRunning(true), soundAlarm(false), filename(filename)
 {
-	Events* viewer = new Events;
-	Events* viewed = new Events;
-	viewer = head;
-	viewed = viewer;
-	using chrono::system_clock;
-	time_t tt = system_clock::to_time_t(system_clock::now());
-	struct tm * ptm = localtime(&tt);
-	while (isRunning)
+	std::fstream file;
+	file.open(filename, ios::in | ios::beg);
+	if (!file.good())
 	{
-		tt = system_clock::to_time_t(system_clock::now());
-		ptm = localtime(&tt);    //Syntax error
-		if (placeholder /*|| (head && (mktime((&head->when)) <= tt))*/)
-		{
-			placeholder = false;
-			soundAlarm = true;
-		};
-		if (head && (mktime((&head->when)) <= tt))
-			soundAlarm = true;
-		while (viewer)
-		{
-			if (viewer && (mktime((&viewer->when)) <= tt))
-			{
-				soundAlarm = true;
-				viewed->next = viewer->next;
-				viewer->next = head;
-				head = viewer;
-				break;
-			}
-
-		}
-		if (soundAlarm)
-		{
-			while (soundAlarm)
-			{
-				cout << '\a';
-				this_thread::sleep_for(chrono::seconds(1));
-			};
-		}
-		this_thread::sleep_for(chrono::seconds(1));
+		file.open(filename, ios::out | ios::trunc);
+		file.close();
 	}
-};
+	else
+	{
+		bool initHead = true;
+		Node *nodeptr;
+		while (!file.eof())
+		{
+			if (initHead)
+			{
+				head = new Node;
+				nodeptr = head;
+				initHead = false;
+			}
+			else
+			{
+				nodeptr->next = new Node;
+				nodeptr = nodeptr->next;
+			}
+			nodeptr->next = nullptr;
+			file >> nodeptr->time->tm_year;
+			file >> nodeptr->time->tm_mon;
+			file >> nodeptr->time->tm_mday;
+			file >> nodeptr->time->tm_hour;
+			file >> nodeptr->time->tm_min;
+			nodeptr->time->tm_sec = 0;
+			file.ignore(); // Ignore blank space between time and label
+			std::getline(file, nodeptr->label);
+		}
+		saveFile();
+	}
+}
 
-//runs the threads
-void Alarmer::mainLoop()
+/**
+ * Main loop function to control class threads.
+ */
+void Alarm::mainLoop()
 {
-	t1 = thread(&Alarmer::userLoop, this);
-	t2 = thread(&Alarmer::alarmLoop, this);
+	t1 = std::thread(&Alarmer::userLoop, this);
+	t2 = std::thread(&Alarmer::alarmLoop, this);
 	t1.join();
 	t2.join();
-};
-// FUNCTIONS : Alarmer
-// NONE
+}
+
+/**
+ * Class destructor, saves file before deletion.
+ */
+Alarmer::~Alarmer()
+{
+	saveFile();
+	Node *nodeptr = head;
+	while (nodeptr)
+	{
+		head = head->next;
+		delete nodeptr;
+		nodeptr = head;
+	}
+}
 
 #endif
