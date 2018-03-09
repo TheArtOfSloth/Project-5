@@ -33,7 +33,7 @@ class Alarm
 	std::list<Node> alarms;
 	//Filename - CHANGE LATER.
 	std::string filename = "C:\\Users\\John\\Desktop\\Schedule.txt";
-	//Open file
+	//Open file - Not currently being used. Remove later or implement.
 	void open(std::string filename) {
 		std::fstream file;
 		std::string line;
@@ -48,10 +48,21 @@ class Alarm
 
 		file.close();
 	}
+
+	void clearFile() {
+		std::fstream file;
+		//What you gonna do with all that junk, all that junk inside this trunc?
+		//You'll get rid of it! (Truncation)
+		file.open(filename, std::ios::out | std::ios::trunc);
+		file.close();
+	}
+
 	//TODO: Change from append mode to truncate and overwrite file from std::list contents.
+	//ERROR : ONLY SAVES LAST NODE IN THE LIST.
 	void save(Node alarm) {
 		std::fstream file;
-		file.open(filename, std::ios::out | std::ios::trunc | std::ios::binary);
+		//After the file is cleared, re-open the file in append mode.
+		file.open(filename, std::ios::out | std::ios::app | std::ios::binary);
 		if (!file.is_open()) {
 			std::cout << "Error saving to file\n";
 		}
@@ -66,7 +77,8 @@ class Alarm
 			<< "2: View alarms\n"
 			<< "3: Delete an alarm\n"
 			<< "4: Check current time\n"
-			<< "5: Quit\n";
+			<< "5: TEST\n"
+			<< "6: Quit\n";
 		std::cout << ">";
 	}
 
@@ -92,6 +104,9 @@ class Alarm
 			else if (line == "4") {
 				time();
 			}
+			else if (line == "5") {
+				test();
+			}
 			else {
 				exitVar = true;
 			}
@@ -99,7 +114,8 @@ class Alarm
 		quit();
 
 	}
-
+	//Convert std::string datetime to time_t to save to file. Use this to set off alarm by checking
+	//time difference with std::chrono::system_clock::now().
 	void time() {
 		std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
 		time_t tt = std::chrono::system_clock::to_time_t(now);
@@ -113,8 +129,6 @@ class Alarm
 		std::string min = local_tm.tm_min + "";
 		std::string sec = local_tm.tm_sec + "";
 		//Convert entered date versus timepoint to see how long til alarm goes off.
-
-
 	}
 
 	void error() {
@@ -148,27 +162,40 @@ class Alarm
 			i++;
 		}
 	}
-
+	//TODO: FIX BUG IN WHICH ALARMS LIST DOES NOT PROPERLY WRITE TO FILE.
+	//ONLY THE LAST NODE IN THE LIST WRITES TO FILE AFTER TRUNCATION FROM SAVE().
 	void removeAlarm() {
 		getAlarms();
 		int num;
 		std::cout << "Enter alarm number to delete: ";
 		std::cin >> num;
-		// Daniel's implementation
+		
 		if (!alarms.empty()) {
 			std::list<Node>::iterator remove;
 			remove = alarms.begin();
 			advance(remove, num);
 			alarms.erase(remove);
-
-			std::cout << "Success?\n";
+			//Reuse the remove iterator to create a new list.
+			//Save the new list to the file.
+			//remove = alarms.begin();
+			//std::list<Node> newAlarms;
+			//while (remove != alarms.end()) {
+			//	newAlarms.push_back(remove);
+			//	remove++;
+			//}
+			
+			//Clear the file before re-writing the list to the file.
+			clearFile();
 			for (auto it : alarms) {
+				
+				
 				save(it);
 
 				std::cout << it;
 			}
 
 		}
+		
 		//There are some issues with the old list (after removal) writing to the file properly.
 		//As such, we can create a new list to store the values. Then write the new list into the file.
 		/*std::list<Node> newAlarms;
@@ -185,6 +212,17 @@ class Alarm
 		std::cin.get();
 		getAlarms();
 		
+	}
+
+	void test() {
+		std::cout << "The error occurs with truncating the file. Test the alarms list.\n";
+		int i = 0;
+		for (auto it : alarms) {
+			std::cout << "Node #" << i << ": ";
+			std::cout << it;
+			save(it);
+			i++;
+		}
 	}
 
 	void quit() {
@@ -211,6 +249,9 @@ public:
 		//setFilename();
 		//Parse any contents of file into alarms list.
 		std::fstream file;
+		//std::string datetime needs to be changed to a tm object.
+		//Then it needs to be checked against system_clock::now() to see when
+		//the alarm needs to go off.
 		std::string datetime, message, line;
 		file.open(filename, std::fstream::in);
 		while (!file.eof()) {
@@ -222,12 +263,13 @@ public:
 			alarms.push_back(alarm);
 		}
 		file.close();
-		int i = 0;
+		//int i = 0;
+		/*
 		for (auto it : alarms) {
 			std::cout << "#" << i << ": " << it;
 			i++;
 		}
-
+		*/
 		polling();
 	}
 	~Alarm() { }
