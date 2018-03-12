@@ -2,6 +2,9 @@
 * File holding Alarm class, methods, and necessary values.
 * @author	KLAPSTEIN_DANIEL
 * @author	SMITH_EVAN
+* @author	BERNSTEIN_JOHN
+* @author	DHILLON_NAVDIP
+* @author	SMITH_TARIN
 */
 #ifndef ALARMER_H
 #define ALARMER_H 1
@@ -9,7 +12,6 @@
 
 // LIBRARIES
 #include "Alarmer.h"
-
 #include<chrono>
 #include<ctime>
 #include<fstream>
@@ -33,100 +35,6 @@ struct Node					        // Struct to hold each individual alarm
 	struct tm time;			// ctime object to hold time
 };
 
-
-/*
-//for comparing two nodes
-bool compareTwoNodes(Node &a, Node &b)
-{
-	{
-		struct tm nothingBefore;
-		nothingBefore.tm_year = 0;
-		nothingBefore.tm_mon = 0;
-		nothingBefore.tm_mday = 1;
-		nothingBefore.tm_hour = 0;
-		nothingBefore.tm_min = 0;
-		nothingBefore.tm_sec = 0;
-		return difftime(mktime(&a.time), mktime(&nothingBefore)) < difftime(mktime(&b.time), mktime(&nothingBefore));
-	};
-};
-*/
-
-//for comparing two nodes. true=sorted, false=unsorted
-bool compareTwoNodes(Node &a, Node &b)
-{
-	if (a.time.tm_year < b.time.tm_year)
-		return true;
-	else
-	{
-		if (a.time.tm_mon < b.time.tm_mon)
-			return true;
-		else
-		{
-			if (a.time.tm_mday < b.time.tm_mday)
-				return true;
-			else
-			{
-				if (a.time.tm_hour < b.time.tm_hour)
-					return true;
-				else
-				{
-					if (a.time.tm_min <= b.time.tm_min)
-						return true;
-				}
-			}
-		}
-
-	}
-	return false;
-};
-
-
-//for sorting a list of nodes
-void sortList(list<Node> a)
-{
-	if (!a.empty())
-	{
-		Node holder = Node();	//holds contents during swapping
-		Node* b = NULL;	//dynamic Node pointer
-		int c;			//int for holding list size
-		c = a.size();	//set c equal to list size
-		b = new Node[c];	//dynamic array for easier sorting
-		//transfer list contents to the array
-		for (int i = 0; i < c; i++)
-		{
-			b[i] = a.front();
-			a.pop_front();
-		}
-		//sort the array
-		//---------------------------------------------------------------
-		for (int i = 0; i < c; i++)
-		{
-			for (int j = i; j < c; j++)
-			{
-				if (!compareTwoNodes(b[i], b[j]))
-				{
-					holder.label = b[i].label;
-					holder.time = b[i].time;
-					b[i].label = b[j].label;
-					b[i].time = b[j].time;
-					b[j].label = holder.label;
-					b[j].time = holder.time;
-				}
-			}
-		}
-		//---------------------------------------------------------------
-		//transfer sorted array contents to list
-		for (int i = 0; i < c; i++)
-		{
-			a.push_back(b[i]);
-		}
-		//deallocate dynamic array
-		delete[] b;
-		b = NULL;
-	}
-};
-
-
 /**
 * Alarmer class to hold and manage a list of alarams, dates, and times.
 */
@@ -134,7 +42,6 @@ class Alarmer
 {
 public:
 	Alarmer();					        // Default constructor (prompt to create file)
-	Alarmer(string);		    // Constructor taking file name
 	void mainLoop();			      // Main polling loop to hold threads
 	~Alarmer();				        // Class destructor
 private:
@@ -145,10 +52,8 @@ private:
 	void addAlarm();			      // Function to add a new alarm
 	void alarmLoop();			      // Thread function to handle alarm checking
 	void deleteAlarm();			    // Function to remove alarm from list
-	void saveFile();			      // Function to sort alarms and save to filename
 	void userLoop();			      // Thread function to handle user input
 	void viewAlarms();			    // Function to display all alarms
-	void sortAlarms();				//Function to sort list of alarms
 	void deleteAlarmOnCall();		//deletes any alarm with a time earlier than the present
 };
 
@@ -158,28 +63,10 @@ Alarmer::Alarmer()
 
 };
 
-//standard constructor
-Alarmer::Alarmer(string a)
-{
-
-};
-
 //destructor
 Alarmer::~Alarmer()
 {
 
-};
-
-//saves the file
-void Alarmer::saveFile()
-{
-
-};
-
-//sorts the list of Alarms
-void Alarmer::sortAlarms()
-{
-	alarms.sort(compareTwoNodes);
 };
 
 //delete an Alarm
@@ -233,7 +120,6 @@ void Alarmer::viewAlarms()
 			i++;
 		}
 	}
-
 	else
 	{
 		cout << "There are no scheduled events." << endl;
@@ -260,8 +146,6 @@ void Alarmer::addAlarm()
 	cin >> temp.time.tm_min;
 	temp.time.tm_sec = 0;
 	alarms.push_back(temp);
-	//sortList();//-----------------------------------------------------------------------------------------
-	//sortAlarms();
 };
 
 //runs user input
@@ -277,12 +161,10 @@ void Alarmer::userLoop()
 			soundAlarm = false;
 			if (!dummy2)
 				deleteAlarmOnCall();
-				//alarms.pop_front();
 			dummy2 = false;
 		}
 		else
 		{
-
 			cout << "1 - View Alarms" << endl;
 			cout << "2 - Add New Alarm" << endl;
 			cout << "3 - Delete an Alarm" << endl;
@@ -364,7 +246,6 @@ void Alarmer::alarmLoop()
 			dummy = false;
 			soundAlarm = true;
 		};
-		//-------------------------------------------------------
 		if (!alarms.empty())
 		{
 			for (auto it : alarms)
@@ -373,11 +254,6 @@ void Alarmer::alarmLoop()
 					soundAlarm = true;
 			}
 		}
-		//-------------------------------------------------------
-		/*
-		if (!alarms.empty() && (mktime((&viewed->time)) <= tt))
-			soundAlarm = true;
-		*/
 		if (soundAlarm)
 		{
 			while (soundAlarm)
@@ -401,7 +277,5 @@ void Alarmer::mainLoop()
 	t1.join();
 	t2.join();
 };
-// FUNCTIONS : Alarmer
-// NONE
 
 #endif
