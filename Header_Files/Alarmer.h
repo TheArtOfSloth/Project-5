@@ -148,7 +148,7 @@ void Alarmer::addAlarm()
 	alarms.push_back(temp);
 };
 
-//runs user input
+//Runs user input
 void Alarmer::userLoop()
 {
 	int command1;
@@ -211,7 +211,7 @@ void Alarmer::userLoop()
 	};
 };
 
-//runs the alarm
+//Runs the alarm
 void Alarmer::alarmLoop()
 {
 	Node viewer = Node();
@@ -266,7 +266,7 @@ void Alarmer::alarmLoop()
 	}
 };
 
-//runs the threads
+//Runs the threads
 void Alarmer::mainLoop()
 {
 	isRunning = true;
