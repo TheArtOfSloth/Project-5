@@ -85,7 +85,7 @@ void Alarmer::deleteAlarm()
 	}
 };
 
-//deletes alarms in thread
+//Deletes alarms in thread
 void Alarmer::deleteAlarmOnCall()
 {
 	if (!alarms.empty())
@@ -109,7 +109,7 @@ void Alarmer::deleteAlarmOnCall()
 	}
 }
 
-//view alarms
+//View alarms
 void Alarmer::viewAlarms()
 {
 	if (!alarms.empty())
@@ -126,7 +126,7 @@ void Alarmer::viewAlarms()
 	}
 };
 
-//adds alarm
+//Adds alarm
 void Alarmer::addAlarm()
 {
 	Node temp = Node();
